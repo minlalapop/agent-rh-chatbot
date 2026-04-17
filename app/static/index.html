@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agent RH interne</title>
+    <style>
+      :root {
+        --bg: #f4efe6;
+        --panel: #fffaf3;
+        --ink: #1f2937;
+        --muted: #5f6b7a;
+        --line: #d7ccbc;
+        --accent: #0f766e;
+        --accent-soft: #d8f3ee;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Avenir Next", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, #fff9ee 0, #f4efe6 45%, #ede2cf 100%);
+      }
+
+      .shell {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 32px 18px 60px;
+      }
+
+      .hero {
+        display: grid;
+        gap: 14px;
+        margin-bottom: 24px;
+      }
+
+      .kicker {
+        display: inline-flex;
+        width: fit-content;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 3vw, 3.3rem);
+        line-height: 1;
+      }
+
+      p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        gap: 20px;
+      }
+
+      .card {
+        background: rgba(255, 250, 243, 0.94);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 20px;
+        box-shadow: 0 16px 40px rgba(76, 56, 27, 0.08);
+      }
+
+      label {
+        display: block;
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+
+      select,
+      textarea,
+      button {
+        width: 100%;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        font: inherit;
+      }
+
+      select,
+      textarea {
+        padding: 12px 14px;
+        background: #fffdf9;
+      }
+
+      textarea {
+        min-height: 140px;
+        resize: vertical;
+      }
+
+      button {
+        padding: 12px 14px;
+        background: var(--accent);
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      button:hover {
+        filter: brightness(0.95);
+      }
+
+      .examples {
+        display: grid;
+        gap: 8px;
+        margin-top: 18px;
+      }
+
+      .examples button {
+        background: white;
+        color: var(--ink);
+        text-align: left;
+      }
+
+      .result {
+        display: grid;
+        gap: 16px;
+      }
+
+      .answer {
+        white-space: pre-wrap;
+        line-height: 1.6;
+      }
+
+      .pill {
+        display: inline-flex;
+        margin: 0 8px 8px 0;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: #f2eee6;
+        border: 1px solid var(--line);
+        font-size: 13px;
+      }
+
+      .workflow {
+        display: grid;
+        gap: 10px;
+      }
+
+      .step {
+        padding: 12px;
+        border-radius: 14px;
+        background: #fffcf7;
+        border: 1px dashed var(--line);
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      @media (max-width: 860px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <span class="kicker">RAG + Workflow agentique</span>
+        <h1>Agent RH interne</h1>
+        <p>
+          Démonstrateur minimal: documents RH, filtrage par rôle, contexte employé et réponse guidée par un workflow simple
+          `intent → accès → retrieval → réponse`.
+        </p>
+      </section>
+
+      <section class="grid">
+        <div class="card">
+          <label for="user">Profil employé</label>
+          <select id="user"></select>
+
+          <div style="height: 14px"></div>
+
+          <label for="question">Question RH</label>
+          <textarea id="question" placeholder="Exemple: Je souhaite passer à temps partiel, quelle est la procédure ?"></textarea>
+
+          <div style="height: 14px"></div>
+          <button id="ask">Interroger l'agent</button>
+
+          <div class="examples">
+            <button class="preset">Où puis-je télécharger mon contrat de travail ?</button>
+            <button class="preset">Quelle est la durée de ma période d'essai ?</button>
+            <button class="preset">Mon bulletin de paie comporte une erreur, comment corriger ?</button>
+            <button class="preset">Combien de jours de congés me reste-t-il ?</button>
+            <button class="preset">Je souhaite poser des congés sans solde, est-ce possible ?</button>
+            <button class="preset">Qui est mon responsable hiérarchique N+1 ?</button>
+          </div>
+        </div>
+
+        <div class="card result">
+          <div>
+            <div class="muted">Réponse</div>
+            <div id="answer" class="answer">Posez une question pour lancer le workflow RH.</div>
+          </div>
+
+          <div>
+            <div class="muted">Sources autorisées</div>
+            <div id="sources"></div>
+          </div>
+
+          <div>
+            <div class="muted">Workflow agentique</div>
+            <div id="workflow" class="workflow"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const userSelect = document.getElementById("user");
+      const questionInput = document.getElementById("question");
+      const answerEl = document.getElementById("answer");
+      const sourcesEl = document.getElementById("sources");
+      const workflowEl = document.getElementById("workflow");
+
+      async function loadUsers() {
+        const res = await fetch("/users");
+        const users = await res.json();
+        userSelect.innerHTML = users
+          .map((user) => `<option value="${user.user_id}">${user.name} (${user.role})</option>`)
+          .join("");
+      }
+
+      async function ask() {
+        answerEl.textContent = "Analyse en cours...";
+        sourcesEl.innerHTML = "";
+        workflowEl.innerHTML = "";
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: userSelect.value, question: questionInput.value }),
+        });
+        const data = await res.json();
+        answerEl.textContent = data.answer || data.detail || "Aucune réponse";
+        sourcesEl.innerHTML = (data.sources || [])
+          .map((src) => `<span class="pill">${src.doc_id} · ${src.section}</span>`)
+          .join("");
+        workflowEl.innerHTML = (data.workflow || [])
+          .map((item) => `<div class="step"><strong>${item.step}</strong><div class="muted">${item.details}</div></div>`)
+          .join("");
+      }
+
+      document.getElementById("ask").addEventListener("click", ask);
+      document.querySelectorAll(".preset").forEach((button) => {
+        button.addEventListener("click", () => {
+          questionInput.value = button.textContent;
+        });
+      });
+
+      loadUsers();
+    </script>
+  </body>
+</html>

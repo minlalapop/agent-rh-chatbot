@@ -1,0 +1,62 @@
+[
+  {
+    "user_id": "e001",
+    "question": "Où puis-je télécharger mon contrat de travail ?",
+    "must_contain": ["espace salarié", "Contrat téléchargeable"],
+    "must_source": ["contract_admin_employee"]
+  },
+  {
+    "user_id": "e001",
+    "question": "Quelle est la durée de ma période d'essai ?",
+    "must_contain": ["4 mois", "2024-05-15"],
+    "must_source": ["contract_admin_employee"]
+  },
+  {
+    "user_id": "e001",
+    "question": "Qui est mon responsable hiérarchique N+1 ?",
+    "must_contain": ["Sophie Bernard"],
+    "must_source": []
+  },
+  {
+    "user_id": "e001",
+    "question": "Mon bulletin de paie comporte une erreur, comment corriger ?",
+    "must_contain": ["ticket paie", "justificatifs"],
+    "must_source": ["payroll_employee"]
+  },
+  {
+    "user_id": "e001",
+    "question": "Combien de jours de congés me reste-t-il ?",
+    "must_contain": ["12.5 jours", "solde de congés"],
+    "must_source": ["leave_employee"]
+  },
+  {
+    "user_id": "e001",
+    "question": "Je souhaite poser des congés sans solde, est-ce possible ?",
+    "must_contain": ["possible", "impact sur la paie"],
+    "must_source": ["leave_employee"]
+  },
+  {
+    "user_id": "e001",
+    "question": "Je souhaite passer à temps partiel, quelle est la procédure ?",
+    "must_contain": ["demande écrite", "avenant au contrat"],
+    "must_source": ["contract_admin_employee"]
+  },
+  {
+    "user_id": "e002",
+    "question": "Mon contrat arrive à échéance, que se passe-t-il ?",
+    "must_contain": ["2026-06-30", "renouvellement"],
+    "must_source": ["contract_admin_employee"]
+  },
+  {
+    "user_id": "m001",
+    "question": "Comment poser un congé ?",
+    "must_contain": ["demande dans le SIRH", "validation du manager"],
+    "must_source": ["leave_employee", "manager_validation"]
+  },
+  {
+    "user_id": "hr001",
+    "question": "Mon bulletin de paie comporte une erreur, comment corriger ?",
+    "must_contain": ["dossier de correction", "régularisation"],
+    "must_source": ["hr_internal_payroll"]
+  }
+]

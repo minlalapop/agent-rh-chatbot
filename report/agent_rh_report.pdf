@@ -1,0 +1,340 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [4 0 R 6 0 R 8 0 R] /Count 3 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
+endobj
+5 0 obj
+<< /Length 1681 >>
+stream
+BT
+/F1 10 Tf
+40 800 Td
+14 TL
+(Rapport Projet - Agent RH interne) Tj
+T*
+() Tj
+T*
+(1. Objectif) Tj
+T*
+() Tj
+T*
+(Construire en moins de 2 jours un chatbot RH interne simple, gratuit et démontrable, capable) Tj
+T*
+(de:) Tj
+T*
+() Tj
+T*
+(répondre à des questions RH fréquentes) Tj
+T*
+(faire de la recherche documentaire RH) Tj
+T*
+(adapter la réponse au profil employé) Tj
+T*
+(filtrer les informations selon le rôle) Tj
+T*
+(être déployé avec Docker) Tj
+T*
+() Tj
+T*
+(2. Contraintes respectées) Tj
+T*
+() Tj
+T*
+(100% gratuit) Tj
+T*
+(aucun modèle local) Tj
+T*
+(aucun fine-tuning) Tj
+T*
+(architecture simple) Tj
+T*
+(outils existants) Tj
+T*
+(déploiement Docker) Tj
+T*
+() Tj
+T*
+(3. Architecture finale) Tj
+T*
+() Tj
+T*
+(Le système est composé d'un seul service applicatif FastAPI.) Tj
+T*
+() Tj
+T*
+(Pipeline:) Tj
+T*
+() Tj
+T*
+(1. L'utilisateur choisit un profil simulé et pose une question.) Tj
+T*
+(2. L'agent détecte l'intention RH.) Tj
+T*
+(3. Le profil utilisateur est chargé depuis data/users.json.) Tj
+T*
+(4. Les documents RH sont filtrés selon le rôle.) Tj
+T*
+(5. Les passages pertinents sont récupérés par recherche lexicale.) Tj
+T*
+(6. La réponse est générée avec:) Tj
+T*
+(Gemini API si une clé gratuite est fournie) Tj
+T*
+(sinon un mode démo déterministe) Tj
+T*
+(7. Les sources et les étapes du workflow sont renvoyées.) Tj
+T*
+() Tj
+T*
+(4. Workflow agentique) Tj
+T*
+() Tj
+T*
+(Le workflow suit exactement:) Tj
+T*
+() Tj
+T*
+(intent -> access -> retrieval -> response) Tj
+T*
+() Tj
+T*
+(Détail:) Tj
+T*
+() Tj
+T*
+(Intent: classifier la question en contrat, paie, conges, organisation, ou general) Tj
+T*
+(Access: charger le rôle \(employee, manager, hr\) et filtrer les documents autorisés) Tj
+T*
+ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 1649 >>
+stream
+BT
+/F1 10 Tf
+40 800 Td
+14 TL
+(Retrieval: chercher les paragraphes RH les plus utiles) Tj
+T*
+(Response: assembler le contexte profil + documents + réponse finale) Tj
+T*
+() Tj
+T*
+(5. Implémentation RAG) Tj
+T*
+() Tj
+T*
+(Le RAG reste volontairement minimal:) Tj
+T*
+() Tj
+T*
+(documents RH en Markdown) Tj
+T*
+(métadonnées simples \(allowed_roles, tags\)) Tj
+T*
+(chunking par sections) Tj
+T*
+(scoring lexical avec pondération par recouvrement et tag) Tj
+T*
+() Tj
+T*
+(Pourquoi ce choix:) Tj
+T*
+() Tj
+T*
+(aucun coût) Tj
+T*
+(pas de vector DB) Tj
+T*
+(pas d'embeddings payants) Tj
+T*
+(suffisant pour une démonstration académique) Tj
+T*
+() Tj
+T*
+(6. Gestion des accès) Tj
+T*
+() Tj
+T*
+(La gestion des accès repose sur les métadonnées des documents:) Tj
+T*
+() Tj
+T*
+(documents salariés visibles par employee, manager, hr) Tj
+T*
+(documents managers visibles par manager, hr) Tj
+T*
+(documents RH internes visibles par hr seulement) Tj
+T*
+() Tj
+T*
+(Effet démontré:) Tj
+T*
+() Tj
+T*
+(un salarié voit la procédure générale de correction de paie) Tj
+T*
+(un RH voit aussi la procédure interne détaillée) Tj
+T*
+() Tj
+T*
+(7. Stack technologique) Tj
+T*
+() Tj
+T*
+(FastAPI: API et interface simple) Tj
+T*
+(Python standard + requests: logique de workflow et appel API) Tj
+T*
+(Markdown: base documentaire RH) Tj
+T*
+(pytest: tests) Tj
+T*
+(Docker + docker-compose: déploiement) Tj
+T*
+(Gemini API gratuit: génération cloud optionnelle) Tj
+T*
+() Tj
+T*
+(8. Plan d'implémentation sur 2 jours) Tj
+T*
+() Tj
+T*
+(Jour 1) Tj
+T*
+() Tj
+T*
+(créer les documents RH et profils utilisateurs) Tj
+T*
+(coder le moteur intent -> access -> retrieval -> response) Tj
+T*
+(exposer l'API FastAPI) Tj
+T*
+ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 9 0 R >>
+endobj
+9 0 obj
+<< /Length 1127 >>
+stream
+BT
+/F1 10 Tf
+40 800 Td
+14 TL
+(ajouter une petite interface web) Tj
+T*
+() Tj
+T*
+(Jour 2) Tj
+T*
+() Tj
+T*
+(écrire les cas de test) Tj
+T*
+(ajouter Dockerfile et docker-compose) Tj
+T*
+(rédiger le rapport) Tj
+T*
+(générer le PDF) Tj
+T*
+(faire une démonstration finale) Tj
+T*
+() Tj
+T*
+(9. Cas de tests couverts) Tj
+T*
+() Tj
+T*
+(Les tests couvrent notamment:) Tj
+T*
+() Tj
+T*
+(téléchargement du contrat) Tj
+T*
+(période d'essai) Tj
+T*
+(N+1) Tj
+T*
+(erreur de bulletin) Tj
+T*
+(solde de congés) Tj
+T*
+(congé sans solde) Tj
+T*
+(passage à temps partiel) Tj
+T*
+(fin de CDD) Tj
+T*
+(validation manager) Tj
+T*
+() Tj
+T*
+(10. Erreurs à éviter) Tj
+T*
+() Tj
+T*
+(ajouter une base vectorielle inutile) Tj
+T*
+(utiliser des services payants) Tj
+T*
+(faire du fine-tuning) Tj
+T*
+(multiplier les microservices) Tj
+T*
+(mélanger logique RH et logique de sécurité) Tj
+T*
+(oublier les cas sans clé API) Tj
+T*
+() Tj
+T*
+(11. Conclusion) Tj
+T*
+() Tj
+T*
+(Cette solution est adaptée à un étudiant car elle est:) Tj
+T*
+() Tj
+T*
+(rapide à construire) Tj
+T*
+(simple à expliquer) Tj
+T*
+(réaliste pour une démo) Tj
+T*
+(compatible avec les contraintes académiques) Tj
+T*
+ET
+endstream
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000127 00000 n 
+0000000197 00000 n 
+0000000323 00000 n 
+0000002056 00000 n 
+0000002182 00000 n 
+0000003883 00000 n 
+0000004009 00000 n 
+trailer
+<< /Size 10 /Root 1 0 R >>
+startxref
+5188
+%%EOF
