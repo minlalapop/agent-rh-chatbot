@@ -1,8 +1,8 @@
 ---
 id: rh_contrats_politique_generale
 title: Politique Générale des Contrats de Travail
-allowed_roles: [employee, manager, hr]
-tags: [contrat, cdi, cdd, interimaire, stage, periode_essai, avenant, mobilite, anciennete]
+allowed_roles: employee, manager, hr
+tags: contrat, cdi, cdd, interimaire, stage, periode_essai, avenant, mobilite, anciennete
 ---
 
 # Politique Générale des Contrats de Travail

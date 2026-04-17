@@ -1,8 +1,8 @@
 ---
 id: rh_procedure_modification_donnees_personnelles
 title: Procédure de Modification des Données Personnelles
-allowed_roles: [employee, manager, hr]
-tags: [rh, donnees_personnelles, adresse, rib, sirh, administratif]
+allowed_roles: employee, manager, hr
+tags: rh, donnees_personnelles, adresse, rib, sirh, administratif
 ---
 
 # Procédure de Modification des Données Personnelles

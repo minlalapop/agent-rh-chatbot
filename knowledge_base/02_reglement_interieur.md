@@ -1,8 +1,8 @@
 ---
 id: rh_reglement_interieur
 title: Règlement Intérieur de l’Entreprise
-allowed_roles: [employee, manager, hr]
-tags: [rh, reglement, absence, comportement, obligations, discipline]
+allowed_roles: employee, manager, hr
+tags: rh, reglement, absence, comportement, obligations, discipline
 ---
 
 # Règlement Intérieur de l’Entreprise

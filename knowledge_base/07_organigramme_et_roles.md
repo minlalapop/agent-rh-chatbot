@@ -1,8 +1,8 @@
 ---
 id: rh_organigramme_et_roles
 title: Organigramme et Rôles Hiérarchiques
-allowed_roles: [employee, manager, hr]
-tags: [organisation, manager, n+1, hierarchie, annuaire, rh]
+allowed_roles: employee, manager, hr
+tags: organisation, manager, n+1, hierarchie, annuaire, rh
 ---
 
 # Organigramme et Rôles Hiérarchiques

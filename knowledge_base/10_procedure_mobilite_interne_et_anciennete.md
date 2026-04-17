@@ -1,8 +1,8 @@
 ---
 id: rh_procedure_mobilite_interne_anciennete
 title: Procédure de Mobilité Interne et Gestion de l’Ancienneté
-allowed_roles: [employee, manager, hr]
-tags: [mobilite, contrat, anciennete, organisation, conges, avantages]
+allowed_roles: employee, manager, hr
+tags: mobilite, contrat, anciennete, organisation, conges, avantages
 ---
 
 # Procédure de Mobilité Interne et Gestion de l’Ancienneté

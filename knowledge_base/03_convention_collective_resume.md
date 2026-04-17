@@ -1,8 +1,8 @@
 ---
 id: rh_convention_collective_resume
 title: Résumé de la Convention Collective Applicable
-allowed_roles: [employee, manager, hr]
-tags: [rh, convention_collective, contrat, anciennete, conges, absence, remuneration]
+allowed_roles: employee, manager, hr
+tags: rh, convention_collective, contrat, anciennete, conges, absence, remuneration
 ---
 
 # Résumé de la Convention Collective Applicable

@@ -1,8 +1,8 @@
 ---
 id: rh_politique_generale
 title: Politique RH Générale
-allowed_roles: [employee, manager, hr]
-tags: [rh, administration, procedure, organisation, sirh]
+allowed_roles: employee, manager, hr
+tags: rh, administration, procedure, organisation, sirh
 ---
 
 # Politique RH Générale

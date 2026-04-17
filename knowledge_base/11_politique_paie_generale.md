@@ -1,8 +1,8 @@
 ---
 id: rh_politique_paie_generale
 title: Politique Générale de Paie
-allowed_roles: [employee, manager, hr]
-tags: [paie, salaire, calendrier, versement, banque, rh]
+allowed_roles: employee, manager, hr
+tags: paie, salaire, calendrier, versement, banque, rh
 ---
 
 # Politique Générale de Paie
@@ -41,7 +41,7 @@ La date de versement correspond à :
 
 - la date à laquelle le virement est émis par l’entreprise
 
-⚠️ Le salarié peut recevoir le salaire avec un léger décalage selon sa banque.
+ Le salarié peut recevoir le salaire avec un léger décalage selon sa banque.
 
 ---
 

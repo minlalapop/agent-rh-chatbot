@@ -1,8 +1,8 @@
 ---
 id: rh_procedure_acces_documents_contractuels
 title: Procédure d’Accès aux Documents Contractuels
-allowed_roles: [employee, manager, hr]
-tags: [contrat, documents, sirh, coffre_fort, attestation, administratif]
+allowed_roles: employee, manager, hr
+tags: contrat, documents, sirh, coffre_fort, attestation, administratif
 ---
 
 # Procédure d’Accès aux Documents Contractuels

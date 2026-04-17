@@ -1,8 +1,8 @@
 ---
 id: rh_procedure_temps_partiel_avenant
 title: Procédure de Passage à Temps Partiel et Avenants au Contrat
-allowed_roles: [employee, manager, hr]
-tags: [contrat, temps_partiel, avenant, modification, organisation, rh]
+allowed_roles: employee, manager, hr
+tags: contrat, temps_partiel, avenant, modification, organisation, rh
 ---
 
 # Procédure de Passage à Temps Partiel et Avenants au Contrat

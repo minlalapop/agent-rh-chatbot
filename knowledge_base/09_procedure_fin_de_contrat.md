@@ -1,8 +1,8 @@
 ---
 id: rh_procedure_fin_contrat
 title: Procédure de Fin de Contrat de Travail
-allowed_roles: [employee, manager, hr]
-tags: [contrat, fin_contrat, cdi, cdd, preavis, rupture, rh]
+allowed_roles: employee, manager, hr
+tags: contrat, fin_contrat, cdi, cdd, preavis, rupture, rh
 ---
 
 # Procédure de Fin de Contrat de Travail
