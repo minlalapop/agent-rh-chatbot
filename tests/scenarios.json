@@ -2,14 +2,14 @@
   {
     "user_id": "e001",
     "question": "Où puis-je télécharger mon contrat de travail ?",
-    "must_contain": ["espace salarié", "Contrat téléchargeable"],
-    "must_source": ["contract_admin_employee"]
+    "must_contain": ["Contrat téléchargeable", "Mes documents"],
+    "must_source": ["rh_procedure_acces_documents_contractuels"]
   },
   {
     "user_id": "e001",
     "question": "Quelle est la durée de ma période d'essai ?",
     "must_contain": ["4 mois", "2024-05-15"],
-    "must_source": ["contract_admin_employee"]
+    "must_source": ["rh_contrats_politique_generale"]
   },
   {
     "user_id": "e001",
@@ -20,43 +20,43 @@
   {
     "user_id": "e001",
     "question": "Mon bulletin de paie comporte une erreur, comment corriger ?",
-    "must_contain": ["ticket paie", "justificatifs"],
-    "must_source": ["payroll_employee"]
+    "must_contain": ["bulletin de paie", "paie"],
+    "must_source": ["paie_incident_et_rectification"]
   },
   {
     "user_id": "e001",
     "question": "Combien de jours de congés me reste-t-il ?",
-    "must_contain": ["12.5 jours", "solde de congés"],
-    "must_source": ["leave_employee"]
+    "must_contain": ["12.5 jours"],
+    "must_source": ["conges_politique_generale"]
   },
   {
     "user_id": "e001",
     "question": "Je souhaite poser des congés sans solde, est-ce possible ?",
-    "must_contain": ["possible", "impact sur la paie"],
-    "must_source": ["leave_employee"]
+    "must_contain": ["sans percevoir de rémunération", "possible"],
+    "must_source": ["procedure_conges_sans_solde"]
   },
   {
     "user_id": "e001",
     "question": "Je souhaite passer à temps partiel, quelle est la procédure ?",
-    "must_contain": ["demande écrite", "avenant au contrat"],
-    "must_source": ["contract_admin_employee"]
+    "must_contain": ["temps partiel", "avenant"],
+    "must_source": ["rh_procedure_temps_partiel_avenant"]
   },
   {
     "user_id": "e002",
     "question": "Mon contrat arrive à échéance, que se passe-t-il ?",
     "must_contain": ["2026-06-30", "renouvellement"],
-    "must_source": ["contract_admin_employee"]
+    "must_source": ["rh_procedure_fin_contrat"]
   },
   {
     "user_id": "m001",
     "question": "Comment poser un congé ?",
-    "must_contain": ["demande dans le SIRH", "validation du manager"],
-    "must_source": ["leave_employee", "manager_validation"]
+    "must_contain": ["rubrique *Congés et absences*", "validation"],
+    "must_source": ["conges_procedure_demande", "conges_regles_contraintes_operationnelles"]
   },
   {
     "user_id": "hr001",
-    "question": "Mon bulletin de paie comporte une erreur, comment corriger ?",
-    "must_contain": ["dossier de correction", "régularisation"],
-    "must_source": ["hr_internal_payroll"]
+    "question": "Puis-je recevoir ma paie sur un autre compte ?",
+    "must_contain": ["prochaine paie", "mois suivant"],
+    "must_source": ["paie_modification_coordonnees_bancaires"]
   }
 ]

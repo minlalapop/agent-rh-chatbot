@@ -42,6 +42,21 @@ class DocumentChunk:
     tokens: list[str]
 
 
+@dataclass
+class DocumentSection:
+    heading: str
+    body: str
+
+
+@dataclass
+class KnowledgeDocument:
+    doc_id: str
+    title: str
+    allowed_roles: list[str]
+    tags: list[str]
+    sections: list[DocumentSection]
+
+
 def tokenize(text: str) -> list[str]:
     normalized_tokens: list[str] = []
     for token in TOKEN_PATTERN.findall(text.lower()):
@@ -82,6 +97,8 @@ def split_sections(content: str) -> list[tuple[str, str]]:
     current_heading = "Général"
     buffer: list[str] = []
     for line in content.splitlines():
+        if line.strip() == "---":
+            continue
         if line.startswith("## "):
             if buffer:
                 sections.append((current_heading, "\n".join(buffer).strip()))
@@ -99,11 +116,12 @@ def split_sections(content: str) -> list[tuple[str, str]]:
 class KnowledgeBase:
     def __init__(self, knowledge_dir: Path):
         self.knowledge_dir = knowledge_dir
-        self.chunks = self._load_chunks()
+        self.documents = self._load_documents()
+        self.chunks = self._build_chunks()
         self.idf = self._compute_idf()
 
-    def _load_chunks(self) -> list[DocumentChunk]:
-        chunks: list[DocumentChunk] = []
+    def _load_documents(self) -> dict[str, KnowledgeDocument]:
+        documents: dict[str, KnowledgeDocument] = {}
         for doc_path in sorted(self.knowledge_dir.glob("*.md")):
             raw_text = doc_path.read_text(encoding="utf-8")
             metadata, content = parse_frontmatter(raw_text)
@@ -111,20 +129,37 @@ class KnowledgeBase:
             title = metadata.get("title", doc_id)
             allowed_roles = [role.strip() for role in metadata.get("allowed_roles", "employee,manager,hr").split(",")]
             tags = [tag.strip() for tag in metadata.get("tags", "").split(",") if tag.strip()]
-            sections = split_sections(content)
+            sections = [
+                DocumentSection(heading=heading, body=body)
+                for heading, body in split_sections(content)
+            ]
+            documents[doc_id] = KnowledgeDocument(
+                doc_id=doc_id,
+                title=title,
+                allowed_roles=allowed_roles,
+                tags=tags,
+                sections=sections,
+            )
+        return documents
+
+    def _build_chunks(self) -> list[DocumentChunk]:
+        chunks: list[DocumentChunk] = []
+        for document in self.documents.values():
             chunk_index = 1
-            for heading, body in sections:
-                paragraphs = [part.strip() for part in body.split("\n\n") if part.strip()]
+            for section in document.sections:
+                paragraphs = [part.strip() for part in section.body.split("\n\n") if part.strip()]
                 for paragraph in paragraphs:
-                    text = f"{heading}. {paragraph}".strip()
+                    if paragraph == "---":
+                        continue
+                    text = f"{section.heading}. {paragraph}".strip()
                     chunks.append(
                         DocumentChunk(
-                            chunk_id=f"{doc_id}#{chunk_index}",
-                            doc_id=doc_id,
-                            title=title,
-                            heading=heading,
-                            allowed_roles=allowed_roles,
-                            tags=tags,
+                            chunk_id=f"{document.doc_id}#{chunk_index}",
+                            doc_id=document.doc_id,
+                            title=document.title,
+                            heading=section.heading,
+                            allowed_roles=document.allowed_roles,
+                            tags=document.tags,
                             content=text,
                             tokens=tokenize(text),
                         )
@@ -163,3 +198,6 @@ class KnowledgeBase:
         topic_bonus = 3.0 if topic and topic in chunk.tags else 0.0
         heading_bonus = 1.5 if any(token in tokenize(chunk.heading) for token in query_tokens) else 0.0
         return lexical + coverage + topic_bonus + heading_bonus
+
+    def get_document(self, doc_id: str) -> KnowledgeDocument | None:
+        return self.documents.get(doc_id)

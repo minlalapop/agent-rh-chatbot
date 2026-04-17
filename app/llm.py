@@ -56,6 +56,15 @@ def call_openrouter(prompt: str) -> tuple[str, str]:
         "model": OPENROUTER_MODEL,
         "messages": [
             {
+                "role": "system",
+                "content": (
+                    "You are a French internal HR assistant. "
+                    "Answer directly from the provided evidence, synthesize steps clearly, "
+                    "and do not tell the user to read files or documents. "
+                    "Only cite source IDs at the end."
+                ),
+            },
+            {
                 "role": "user",
                 "content": prompt,
             }

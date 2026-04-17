@@ -4,7 +4,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 from app.config import DATA_DIR, KNOWLEDGE_DIR, LLM_MODE, LLM_PROVIDER, TOP_K
-from app.knowledge import DocumentChunk, KnowledgeBase, UserProfile, load_users, tokenize
+from app.knowledge import DocumentChunk, KnowledgeBase, KnowledgeDocument, UserProfile, load_users, tokenize
 from app.llm import call_llm
 
 
@@ -12,6 +12,14 @@ from app.llm import call_llm
 class Intent:
     topic: str
     label: str
+
+
+STANDARD_QUESTION_MAP = {
+    "quelle est la durée de ma période d'essai ?": "trial_period",
+    "je souhaite passer à temps partiel, quelle est la procédure ?": "part_time",
+    "comment calculer ma prime de performance ?": "performance_bonus",
+    "comment déclarer un arrêt maladie ?": "sick_leave",
+}
 
 
 def classify_intent(question: str) -> Intent:
@@ -28,21 +36,108 @@ def classify_intent(question: str) -> Intent:
     return Intent(topic="general", label="Général")
 
 
-def deduplicate_sources(chunks: list[DocumentChunk]) -> list[dict[str, str]]:
-    seen: set[str] = set()
-    sources: list[dict[str, str]] = []
+def deduplicate_sources(chunks: list[DocumentChunk]) -> list[dict[str, object]]:
+    grouped: dict[str, dict[str, object]] = {}
     for chunk in chunks:
-        if chunk.doc_id in seen:
-            continue
-        seen.add(chunk.doc_id)
-        sources.append({"doc_id": chunk.doc_id, "title": chunk.title, "section": chunk.heading})
-    return sources
+        source = grouped.setdefault(
+            chunk.doc_id,
+            {
+                "doc_id": chunk.doc_id,
+                "title": chunk.title,
+                "section": chunk.heading,
+                "relevant_sections": [],
+            },
+        )
+        sections = source["relevant_sections"]
+        if chunk.heading not in sections:
+            sections.append(chunk.heading)
+    return list(grouped.values())
+
+
+def normalize_question(question: str) -> str:
+    return " ".join(question.strip().lower().split())
+
+
+def strip_heading_prefix(chunk: DocumentChunk) -> str:
+    prefix = f"{chunk.heading}. "
+    if chunk.content.startswith(prefix):
+        return chunk.content[len(prefix) :].strip()
+    return chunk.content.strip()
+
+
+def get_source_ids(chunks: list[DocumentChunk]) -> str:
+    source_ids = ", ".join(f"[{source['doc_id']}]" for source in deduplicate_sources(chunks))
+    return source_ids or "aucune"
+
+
+def standard_answer(question: str, user: UserProfile, chunks: list[DocumentChunk]) -> str | None:
+    standard_type = STANDARD_QUESTION_MAP.get(normalize_question(question))
+    if standard_type is None:
+        return None
+
+    sources = get_source_ids(chunks)
+
+    if standard_type == "trial_period":
+        return (
+            f"Votre période d'essai est de {user.trial_period_months} mois, avec une fin prévue le {user.trial_period_end}. "
+            "Elle est définie dans votre contrat de travail et peut, selon les règles applicables, être renouvelée sous conditions.\n\n"
+            "Points d'attention :\n"
+            f"- Vous êtes actuellement sur un contrat de type {user.contract_type}.\n"
+            "- Pendant la période d'essai, un délai de prévenance doit être respecté en cas de rupture.\n"
+            f"Sources: {sources}"
+        )
+
+    if standard_type == "part_time":
+        return (
+            "Vous pouvez demander un passage à temps partiel, mais la demande doit être formalisée et validée avant toute mise en place. "
+            "Si elle est acceptée, un avenant à votre contrat sera rédigé pour fixer le nouveau temps de travail et les conditions associées.\n\n"
+            "Étapes :\n"
+            "- Adressez une demande écrite à votre manager et/ou aux RH en précisant le taux souhaité et la date de début.\n"
+            "- Votre demande est analysée sur les plans organisationnel et contractuel.\n"
+            "- Un entretien peut être organisé pour ajuster les modalités.\n"
+            "- En cas d'accord, l'avenant est rédigé puis signé.\n\n"
+            "Points d'attention :\n"
+            "- Le passage à temps partiel peut impacter votre salaire, vos congés et l'organisation de travail.\n"
+            "- Les délais de traitement varient selon la période et la complexité du dossier.\n"
+            f"Sources: {sources}"
+        )
+
+    if standard_type == "performance_bonus":
+        return (
+            "Votre prime de performance est calculée à partir d'objectifs et d'indicateurs mesurables définis en amont. "
+            "Selon votre poste, elle peut dépendre de votre performance individuelle, des résultats de votre équipe et, dans certains cas, d'objectifs collectifs ou commerciaux.\n\n"
+            "Étapes :\n"
+            "- Vérifiez la période de calcul applicable à votre prime (mensuelle, trimestrielle, semestrielle ou annuelle).\n"
+            "- Comparez vos résultats aux objectifs ou KPI fixés.\n"
+            "- La performance est évaluée par le manager, puis validée par les RH avant versement.\n\n"
+            "Points d'attention :\n"
+            "- La prime peut être réduite ou non versée si les objectifs ne sont pas atteints ou si certaines conditions ne sont pas remplies.\n"
+            "- Elle apparaît sur votre bulletin de paie comme ligne distincte et peut expliquer une variation de salaire.\n"
+            f"Sources: {sources}"
+        )
+
+    if standard_type == "sick_leave":
+        return (
+            "En cas d'arrêt maladie, vous devez prévenir votre manager rapidement et transmettre votre arrêt de travail dans le délai réglementaire, en général sous 48 heures. "
+            "Les documents doivent ensuite être enregistrés pour permettre le traitement administratif de votre absence.\n\n"
+            "Étapes :\n"
+            "- Informez votre manager dès que possible.\n"
+            "- Déclarez l'absence dans le SIRH si ce canal est utilisé.\n"
+            "- Transmettez l'avis d'arrêt de travail aux RH et les volets nécessaires à la sécurité sociale.\n"
+            "- En cas de prolongation, envoyez un nouveau certificat dans le même délai.\n\n"
+            "Points d'attention :\n"
+            "- Le maintien de salaire dépend notamment de votre ancienneté, de la convention collective et de la durée de l'arrêt.\n"
+            "- Une visite de reprise peut être nécessaire selon la durée de l'absence.\n"
+            f"Sources: {sources}"
+        )
+
+    return None
 
 
 def build_profile_context(user: UserProfile, question: str) -> list[str]:
     lower = question.lower()
     facts = [
-        f"Employé: {user.name}",
+        "Utilisateur connecté: profil employé authentifié",
         f"Rôle: {user.role}",
         f"Département: {user.department}",
         f"Type de contrat: {user.contract_type}",
@@ -78,16 +173,31 @@ def build_prompt(
     profile_facts: list[str],
     chunks: list[DocumentChunk],
 ) -> str:
-    sources = "\n".join(f"- [{chunk.doc_id}] {chunk.content}" for chunk in chunks)
+    sources = "\n".join(
+        f"- Source [{chunk.doc_id}] | Titre: {chunk.title} | Section: {chunk.heading}\n  Extrait: {chunk.content}"
+        for chunk in chunks
+    )
     user_context = "\n".join(f"- {fact}" for fact in profile_facts)
     return f"""
-Tu es un agent RH interne francophone. Réponds de manière concise, pratique et fiable.
+Tu es un agent RH interne francophone. Tu réponds comme un gestionnaire RH clair, concret et utile.
 
 Règles:
 - N'invente rien hors des sources fournies.
 - Si une information dépend du profil employé, utilise le contexte utilisateur.
-- Si la procédure comporte plusieurs étapes, liste-les clairement.
-- Cite les identifiants de sources à la fin sous la forme: Sources: [id1], [id2]
+- Adresse-toi toujours à l'utilisateur en disant "vous" ou "votre".
+- N'utilise jamais le prénom ou le nom du salarié dans la réponse, sauf si la question demande explicitement son identité.
+- N'écris pas à la troisième personne sur l'utilisateur connecté. Évite "le salarié", "l'employé", "Alice" ou toute formulation distante quand la question concerne sa propre situation.
+- Réponds directement à la question. N'écris pas "consultez le fichier", "voir le document" ou "les informations sont dans...".
+- Extrais l'information utile des extraits et reformule-la en réponse opérationnelle.
+- Si la question porte sur une procédure, donne des étapes concrètes, dans l'ordre.
+- Si la question porte sur des conditions ou impacts, explicite-les clairement.
+- Si une information exacte n'est pas présente, dis seulement ce qui est confirmé par les sources.
+- Ne mentionne les identifiants de documents qu'à la toute fin.
+- Structure attendue:
+  1. Une réponse directe en 2 à 5 phrases.
+  2. Si utile, une section "Étapes :" avec des puces courtes.
+  3. Si utile, une section "Points d'attention :" avec impacts, délais ou validations.
+  4. Dernière ligne obligatoire: Sources: [id1], [id2]
 
 Catégorie détectée: {intent.label}
 Question: {question}
@@ -95,7 +205,7 @@ Question: {question}
 Contexte utilisateur:
 {user_context}
 
-Sources récupérées:
+Extraits RH autorisés:
 {sources}
 
 Réponds en français.
@@ -143,17 +253,22 @@ class HRChatAgent:
         profile_facts = build_profile_context(user, question)
         chunks = self.knowledge.retrieve(query=question, user_role=user.role, topic=intent.topic, limit=TOP_K)
 
-        prompt = build_prompt(question, user, intent, profile_facts, chunks)
-        if LLM_MODE == "llm_only":
-            answer_text, model_used = call_llm(prompt)
-            answer_mode = f"{LLM_PROVIDER}:{model_used}"
+        deterministic_answer = standard_answer(question, user, chunks)
+        if deterministic_answer is not None:
+            answer_text = deterministic_answer
+            answer_mode = "standard"
         else:
-            try:
+            prompt = build_prompt(question, user, intent, profile_facts, chunks)
+            if LLM_MODE == "llm_only":
                 answer_text, model_used = call_llm(prompt)
                 answer_mode = f"{LLM_PROVIDER}:{model_used}"
-            except RuntimeError:
-                answer_mode = "demo"
-                answer_text = demo_answer(question, profile_facts, chunks)
+            else:
+                try:
+                    answer_text, model_used = call_llm(prompt)
+                    answer_mode = f"{LLM_PROVIDER}:{model_used}"
+                except RuntimeError:
+                    answer_mode = "demo"
+                    answer_text = demo_answer(question, profile_facts, chunks)
 
         workflow = [
             {"step": "intent", "details": intent.label},
@@ -168,4 +283,25 @@ class HRChatAgent:
             "answer": answer_text,
             "sources": deduplicate_sources(chunks),
             "workflow": workflow,
+        }
+
+    def get_document_view(self, user_id: str, doc_id: str) -> dict:
+        user = self.users.get(user_id)
+        if not user:
+            raise ValueError(f"Utilisateur inconnu: {user_id}")
+        document = self.knowledge.get_document(doc_id)
+        if document is None:
+            raise ValueError(f"Document inconnu: {doc_id}")
+        if user.role not in document.allowed_roles:
+            raise PermissionError(f"Accès refusé au document: {doc_id}")
+
+        return {
+            "doc_id": document.doc_id,
+            "title": document.title,
+            "allowed_roles": document.allowed_roles,
+            "tags": document.tags,
+            "sections": [
+                {"heading": section.heading, "body": section.body}
+                for section in document.sections
+            ],
         }

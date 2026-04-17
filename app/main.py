@@ -42,6 +42,16 @@ def list_users() -> list[dict[str, str]]:
     ]
 
 
+@app.get("/documents/{doc_id}")
+def get_document(doc_id: str, user_id: str) -> dict:
+    try:
+        return agent.get_document_view(user_id=user_id, doc_id=doc_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
+
+
 @app.post("/chat")
 def chat(payload: ChatRequest) -> dict:
     try:
