@@ -1,8 +1,8 @@
 ---
 id: paie_guide_comprehension_bulletin
 title: Guide de compréhension du bulletin de paie et des variations
-allowed_roles: [employee, manager, hr]
-tags: [paie, bulletin, salaire, primes, cotisations, heures_supplementaires, absences]
+allowed_roles: employee, manager, hr
+tags: paie, bulletin, salaire, primes, cotisations, heures_supplementaires, absences
 ---
 
 # Guide de compréhension du bulletin de paie et des variations

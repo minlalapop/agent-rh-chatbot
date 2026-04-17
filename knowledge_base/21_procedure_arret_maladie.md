@@ -1,8 +1,8 @@
 ---
 id: absences_procedure_arret_maladie
 title: Procédure en cas d’arrêt maladie
-allowed_roles: [employee, manager, hr]
-tags: [absence, maladie, arret, justificatif, securite_sociale, rh]
+allowed_roles: employee, manager, hr
+tags: absence, maladie, arret, justificatif, securite_sociale, rh
 ---
 
 # Procédure en cas d’arrêt maladie

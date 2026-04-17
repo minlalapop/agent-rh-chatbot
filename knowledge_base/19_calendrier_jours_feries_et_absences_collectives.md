@@ -1,8 +1,8 @@
 ---
 id: conges_calendrier_feries_absences
 title: Calendrier des jours fériés et absences collectives
-allowed_roles: [employee, manager, hr]
-tags: [conges, jours_feries, absences_collectives, calendrier, organisation]
+allowed_roles: employee, manager, hr
+tags: conges, jours_feries, absences_collectives, calendrier, organisation
 ---
 
 # Calendrier des jours fériés et absences collectives

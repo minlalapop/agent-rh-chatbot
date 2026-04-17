@@ -1,8 +1,8 @@
 ---
 id: conges_regles_contraintes_operationnelles
 title: Règles de prise de congés et contraintes opérationnelles
-allowed_roles: [employee, manager, hr]
-tags: [conges, organisation, contraintes, planning, manager, absences]
+allowed_roles: employee, manager, hr
+tags: conges, organisation, contraintes, planning, manager, absences
 ---
 
 # Règles de prise de congés et contraintes opérationnelles

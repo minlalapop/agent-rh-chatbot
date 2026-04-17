@@ -1,8 +1,8 @@
 ---
 id: conges_politique_generale
 title: Politique des congés annuels et RTT
-allowed_roles: [employee, manager, hr]
-tags: [conges, rtt, absences, droits, sirh, temps_de_travail]
+allowed_roles: employee, manager, hr
+tags: conges, rtt, absences, droits, sirh, temps_de_travail
 ---
 
 # Politique des congés annuels et RTT

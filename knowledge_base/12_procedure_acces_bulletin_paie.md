@@ -1,8 +1,8 @@
 ---
 id: paie_acces_bulletin
 title: Accès au bulletin de paie
-allowed_roles: [employee, manager, hr]
-tags: [paie, bulletin, sirh, documents, acces]
+allowed_roles: employee, manager, hr
+tags: paie, bulletin, sirh, documents, acces
 ---
 
 # Accès au bulletin de paie

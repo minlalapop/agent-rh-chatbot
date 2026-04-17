@@ -1,8 +1,8 @@
 ---
 id: paie_incident_et_rectification
 title: Procédure de gestion des incidents de paie et rectification
-allowed_roles: [employee, manager, hr]
-tags: [paie, incident, erreur, bulletin, rectification, support]
+allowed_roles: employee, manager, hr
+tags: paie, incident, erreur, bulletin, rectification, support
 ---
 
 # Procédure de gestion des incidents de paie et rectification

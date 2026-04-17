@@ -1,8 +1,8 @@
 ---
 id: paie_modification_coordonnees_bancaires
 title: Procédure de modification des coordonnées bancaires
-allowed_roles: [employee, hr]
-tags: [paie, rib, coordonnees_bancaires, modification, virement]
+allowed_roles: employee, hr
+tags: paie, rib, coordonnees_bancaires, modification, virement
 ---
 
 # Procédure de modification des coordonnées bancaires

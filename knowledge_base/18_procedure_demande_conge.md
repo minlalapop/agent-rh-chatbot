@@ -1,8 +1,8 @@
 ---
 id: conges_procedure_demande
 title: Procédure de demande de congé
-allowed_roles: [employee, manager, hr]
-tags: [conges, demande, sirh, validation, absences]
+allowed_roles: employee, manager, hr
+tags: conges, demande, sirh, validation, absences
 ---
 
 # Procédure de demande de congé

@@ -1,8 +1,8 @@
 ---
 id: paie_politique_primes_variables
 title: Politique des primes variables
-allowed_roles: [employee, manager, hr]
-tags: [paie, primes, remuneration, variable, performance, objectifs]
+allowed_roles: employee, manager, hr
+tags: paie, primes, remuneration, variable, performance, objectifs
 ---
 
 # Politique des primes variables
