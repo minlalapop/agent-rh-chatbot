@@ -18,7 +18,6 @@ services:
     volumes:
       - ./knowledge_base:/app/knowledge_base:ro
       - ./data:/app/data:ro
-      - ./report:/app/report
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health').read()"]
       interval: 30s

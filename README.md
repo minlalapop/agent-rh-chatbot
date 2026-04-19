@@ -30,8 +30,6 @@ Solution minimale, réaliste et démontrable en 2 jours pour répondre à des qu
 - `knowledge_base/`: documents RH simulés
 - `data/`: profils employés
 - `tests/`: cas de tests
-- `report/`: rapport académique et PDF
-- `scripts/`: génération du PDF
 
 ## Lancer localement
 
@@ -78,9 +76,3 @@ Les tests tournent sans clé API et vérifient:
 - filtrage par rôle
 - contexte utilisateur
 - réponses attendues sur les cas fournis
-
-## Générer le PDF
-
-```bash
-python3 scripts/generate_pdf_report.py
-```
