@@ -1,6 +1,5 @@
 # Agent RH interne
 
-Solution minimale, réaliste et démontrable en 2 jours pour répondre à des questions RH internes avec:
 
 - RAG simple sur documents RH
 - filtrage par rôle
@@ -31,17 +30,7 @@ Solution minimale, réaliste et démontrable en 2 jours pour répondre à des qu
 - `data/`: profils employés
 - `tests/`: cas de tests
 
-## Lancer localement
 
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env
-uvicorn app.main:app --reload
-```
-
-Puis ouvrir `http://localhost:8000`.
 
 ## Lancer avec Docker
 
@@ -56,23 +45,4 @@ docker compose up --build
 - `GET /users`
 - `POST /chat`
 
-Exemple:
 
-```bash
-curl -X POST http://localhost:8000/chat \
-  -H "Content-Type: application/json" \
-  -d '{"user_id":"e001","question":"Combien de jours de congés me reste-t-il ?"}'
-```
-
-## Tests
-
-```bash
-pytest
-```
-
-Les tests tournent sans clé API et vérifient:
-
-- récupération RAG
-- filtrage par rôle
-- contexte utilisateur
-- réponses attendues sur les cas fournis
