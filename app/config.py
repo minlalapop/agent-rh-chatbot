@@ -7,6 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
 KNOWLEDGE_DIR = BASE_DIR / "knowledge_base"
 STATIC_DIR = BASE_DIR / "app" / "static"
+CHAT_HISTORY_PATH = DATA_DIR / "chat_history.jsonl"
 
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "openrouter").strip().lower()
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "").strip()

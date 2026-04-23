@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import json
+from datetime import datetime, timezone
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from app.config import DATA_DIR, KNOWLEDGE_DIR, LLM_MODE, LLM_PROVIDER, TOP_K
+from app.config import CHAT_HISTORY_PATH, DATA_DIR, KNOWLEDGE_DIR, LLM_MODE, LLM_PROVIDER, TOP_K
 from app.knowledge import DocumentChunk, KnowledgeBase, KnowledgeDocument, UserProfile, load_users, tokenize
 from app.llm import call_llm
 
@@ -240,9 +242,15 @@ def demo_answer(question: str, profile_facts: list[str], chunks: list[DocumentCh
 
 
 class HRChatAgent:
-    def __init__(self, users_path: Path | None = None, knowledge_dir: Path | None = None):
+    def __init__(
+        self,
+        users_path: Path | None = None,
+        knowledge_dir: Path | None = None,
+        history_path: Path | None = None,
+    ):
         self.users = load_users(users_path or DATA_DIR / "users.json")
         self.knowledge = KnowledgeBase(knowledge_dir or KNOWLEDGE_DIR)
+        self.history_path = history_path or CHAT_HISTORY_PATH
 
     def answer(self, user_id: str, question: str) -> dict:
         user = self.users.get(user_id)
@@ -277,13 +285,54 @@ class HRChatAgent:
             {"step": "response", "details": answer_mode},
         ]
 
-        return {
+        result = {
             "user": asdict(user),
             "intent": asdict(intent),
             "answer": answer_text,
             "sources": deduplicate_sources(chunks),
             "workflow": workflow,
         }
+        self._append_history_entry(user=user, question=question, result=result)
+        return result
+
+    def _append_history_entry(self, user: UserProfile, question: str, result: dict) -> None:
+        entry = {
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "user_id": user.user_id,
+            "user_role": user.role,
+            "question": question,
+            "answer": result["answer"],
+            "intent": result["intent"],
+            "sources": result["sources"],
+            "workflow": result["workflow"],
+        }
+        try:
+            self.history_path.parent.mkdir(parents=True, exist_ok=True)
+            with self.history_path.open("a", encoding="utf-8") as history_file:
+                history_file.write(json.dumps(entry, ensure_ascii=False) + "\n")
+        except OSError:
+            # In some Docker setups the app filesystem is read-only.
+            # History persistence should not break the chat endpoint.
+            return
+
+    def list_history(self, user_id: str | None = None, limit: int = 50) -> list[dict]:
+        if limit <= 0:
+            return []
+        if not self.history_path.exists():
+            return []
+
+        entries: list[dict] = []
+        for line in self.history_path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            try:
+                entry = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if user_id and entry.get("user_id") != user_id:
+                continue
+            entries.append(entry)
+        return entries[-limit:]
 
     def get_document_view(self, user_id: str, doc_id: str) -> dict:
         user = self.users.get(user_id)
